@@ -1,0 +1,71 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  processes Process[]
+  tasks     Task[]
+}
+
+model Process {
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String     @db.ObjectId
+  user             User?     @relation(fields: [userId], references: [id])
+  numeroProcesso   String     
+  tipo             String?
+  autor            String?
+  reu              String?
+  vara             String?
+  comarca          String?
+  status           String
+  dataDistribuicao DateTime?
+  valorCausa       Float?
+  descricao        String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  movements        Movement[]
+  tasks            Task[]
+  @@unique([numeroProcesso, userId])
+}
+
+model Movement {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  processId   String   @db.ObjectId
+  process     Process  @relation(fields: [processId], references: [id])
+  data        DateTime
+  tipo        String
+  descricao   String
+  responsavel String?
+  observacoes String?
+  anexos      String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Task {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String    @db.ObjectId
+  user           User      @relation(fields: [userId], references: [id])
+  processId      String    @db.ObjectId
+  process        Process   @relation(fields: [processId], references: [id])
+  titulo         String
+  descricao      String?
+  dataVencimento DateTime
+  prioridade     String
+  status         String
+  concluida      Boolean   @default(false)
+  dataConclusao  DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
