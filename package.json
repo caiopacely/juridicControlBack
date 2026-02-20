@@ -4,8 +4,8 @@
   "type": "module",
   "main": "src/server.js",
   "scripts": {
-  "start": "node server.js",
-  "dev": "node src/server.js"
+  "start": "node SRC/server.js",
+  "dev": "node SRC/server.js"
   },
   "dependencies": {
     "axios": "^1.13.3",
